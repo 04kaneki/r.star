@@ -1,0 +1,5 @@
+# Racket files
+compiled
+*.rkt~
+*.bak
+.DS_Store
