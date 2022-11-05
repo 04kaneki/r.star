@@ -1,5 +1,5 @@
 # r.star
-A simple implementation of the A* algorithm in racket.
+Two simple implementations of the Dijkstra and A* algorithms in racket.
 
 <br>
 
