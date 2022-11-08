@@ -3,3 +3,4 @@ compiled
 *.rkt~
 *.bak
 .DS_Store
+*.png
