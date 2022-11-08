@@ -1,6 +1,7 @@
 #lang racket
 
 (require "node.rkt")
+(require "map.rkt")
 
 (provide Dijkstra)
 
@@ -22,9 +23,10 @@
   ;; set default values
   (map (λ (i)
          (cond
-           [(not (equal? (node-id start) (node-id i))) (let () (hash-set! d i +inf.0)
-                                                         (hash-set! parent i #f)
-                                                         )]
+           [(not (eq? start i)) (let ()
+                                  (hash-set! d i +inf.0)
+                                  (hash-set! parent i #f)
+                                  )]
            )
          )
        all-nodes)
@@ -32,7 +34,7 @@
   (let loop()
     (cond
       ;; check if the queue is empty => no path
-      [(set-empty? queue) (get-path all-nodes parent d)]
+      [(set-empty? queue) (get-path all-nodes start parent d)]
       [else ((λ (node)
                ;; remove the node that will be procces from the prio queue
                (set-remove! queue node)
@@ -81,10 +83,9 @@
   )
 
 ;; get the path found by the algorithm
-(define (get-path all-nodes parent d)
-  (map (λ (node)
-         (cons (node-id node) (hash-ref d node))
-         ) all-nodes)
+(define (get-path all-nodes start parent d)
+  (map (λ (i)
+         (cons i (hash-ref d i))) all-nodes)
   )
 
 ;;;;;;; TEST ;;;;;;;;;;;;;;
@@ -109,5 +110,10 @@
 
 (set-node-paths! E (list (path F 1)))
 
-(define (test) (Dijkstra A (list A B C D E F)))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; dijkstra demo
+(define (test-dijkstra)
+  (let ([results (Dijkstra A (list A B C D E F))])
+    (displayln (map (λ (i) (cons (node-id (car i)) (cdr i))) results))
+    (draw-map-Dijkstra results A)
+    )  
+  )
