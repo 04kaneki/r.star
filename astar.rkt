@@ -1,6 +1,7 @@
 #lang racket
 
 (require "node.rkt")
+(require "map.rkt")
 
 (provide A*)
 
@@ -25,9 +26,10 @@
   ;; set default values
   (map (λ (i)
          (cond
-           [(not (equal? (node-id start) (node-id i))) (let () (hash-set! d i +inf.0)
-                                                         (hash-set! parent i #f)
-                                                         (hash-set! h i (euclidean-distance i target)))]
+           [(not (eq? start i)) (let ()
+                                 (hash-set! d i +inf.0)
+                                 (hash-set! parent i #f)
+                                 (hash-set! h i (euclidean-distance i target)))]
            )
          )
        all-nodes)
@@ -99,8 +101,8 @@
 (define (get-path start target parent)
   (let rec ([node target] [path '()])
     (cond
-      [(eq? node start) (reverse (cons (node-id start) path))]
-      [else (rec (hash-ref parent node) (cons (node-id node) path))]
+      [(eq? node start) (cons start path)]
+      [else (rec (hash-ref parent node) (cons node path))]
       )
     )
   )
@@ -108,11 +110,11 @@
 
 ;;;;;;; TEST ;;;;;;;;;;;;;;
 (define A (node "A" 100 250))
-(define B (node "B" 450 70))
-(define C (node "C" 450 450))
-(define D (node "D" 600 80))
-(define E (node "E" 600 300))
-(define F (node "F" 800 260))
+(define B (node "B" 300 400))
+(define C (node "C" 300 70))
+(define D (node "D" 500 400))
+(define E (node "E" 500 200))
+(define F (node "F" 650 250))
 
 (set-node-paths! A (list (path C 316)))
 (set-node-paths! A (cons (path B 316) (node-paths A)))
@@ -128,5 +130,10 @@
 
 (set-node-paths! E (list (path F 217)))
 
-(define (test) (A* A F (list A B C D E F)))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; A* demo
+(define (test-A*)
+  (let ([path (A* A F (list A B C D E F))])
+    (displayln (map (λ (i) (node-id i)) path))
+    (draw-map-A* (list A B C D E F) A F (list->mutable-set path))
+    )
+  )
