@@ -6,7 +6,7 @@
 (provide Dijkstra)
 
 ; Dijktsra
-(define (Dijkstra start all-nodes)
+(define (Dijkstra start all-nodes [return-result #t])
   
   ;; parent
   (define parent (make-hash))
@@ -34,7 +34,7 @@
   (let loop()
     (cond
       ;; check if the queue is empty => no path
-      [(set-empty? queue) (get-path all-nodes start parent d)]
+      [(set-empty? queue) (cond [return-result (get-path all-nodes start parent d)])]
       [else ((λ (node)
                ;; remove the node that will be procces from the prio queue
                (set-remove! queue node)

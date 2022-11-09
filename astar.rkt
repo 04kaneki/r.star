@@ -6,7 +6,7 @@
 (provide A*)
 
 ; A* algorithm
-(define (A* start target all-nodes)
+(define (A* start target all-nodes [return-result #t])
 
   ;; parent
   (define parent (make-hash))
@@ -44,7 +44,7 @@
                (set-remove! queue node)
                ;; check if the node is the target
                (cond
-                 [(eq? node target) (get-path start target parent)]
+                 [(eq? node target) (cond [return-result (get-path start target parent)])]
                  [else ((λ ()
                           (map (λ (i)
                                  ((λ (neighbor dist)
