@@ -1,8 +1,21 @@
 #lang racket/gui
 
+(require math/base)
 (require "node.rkt")
 
-(provide draw-map-A* draw-map-Dijkstra)
+(provide draw-map-A* draw-map-Dijkstra random-map)
+
+;; create a map with n random nodes with 2 paths each
+(define (random-map n [x-max 900] [y-max 500] [max-cost 500])
+
+  (let ([nodes (for/list ([i n]) (node (list->string (for/list ([i 6]) (integer->char (random-integer 65 90)))) (random-integer 0 x-max ) (random-integer 0 y-max)))])
+    (for ([node nodes])
+      (set-node-paths! node (list (path (list-ref nodes (random (length nodes))) (random-integer 0 max-cost))))
+      (set-node-paths! node (cons (path (list-ref nodes (random (length nodes))) (random-integer 0 max-cost)) (node-paths node)))
+      )
+    nodes
+    )
+  )
 
 ;; draws graph for the nodes
 (define (draw-map-A* nodes start target path-nodes [x-max 900] [y-max 500])
